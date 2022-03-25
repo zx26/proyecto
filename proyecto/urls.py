@@ -15,7 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from compras.views import Vista
  
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('vistas/', Vista.as_view()),
  ]
