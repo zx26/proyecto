@@ -1,5 +1,6 @@
 from abc import abstractmethod
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.renderers import TemplateHTMLRenderer 
 from blog.serializers import UsuarioSerializador, EntradaSerializador, ComentarioSerializador
 
 class VistaBase(ModelViewSet):
@@ -11,6 +12,10 @@ class VistaBase(ModelViewSet):
     de herencia para las demas que esten en el proyecto"""
 
     serializer_class=None #variable de la clase del serializador declarada none por su uso abstracto
+
+    renderer_classes=[TemplateHTMLRenderer]
+
+    template_name=None
     
 
     filterset_fields = '__all__'
@@ -38,6 +43,9 @@ class VistaBase(ModelViewSet):
 
 class ApiUsuario(VistaBase):
     serializer_class=UsuarioSerializador
+    template_name='usuario.html'
+
+    
 
     def __str__(self):
         return r"usuario"
