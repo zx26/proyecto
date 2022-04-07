@@ -1,8 +1,16 @@
 from abc import abstractmethod
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.renderers import TemplateHTMLRenderer 
+from rest_framework.renderers import TemplateHTMLRenderer, BaseRenderer 
 from blog.serializers import UsuarioSerializador, EntradaSerializador, ComentarioSerializador
+from rest_framework.response import Response 
 
+class Renderizador(BaseRenderer):
+    media_type='text/html'
+    format='html'
+
+    def render(self, data, accepted_media_type=None, renderer_context=None):
+        return Response()
+ 
 class VistaBase(ModelViewSet):
     """Resumen  
     
@@ -43,9 +51,10 @@ class VistaBase(ModelViewSet):
 
 class ApiUsuario(VistaBase):
     serializer_class=UsuarioSerializador
-    template_name='usuario.html'
+    template_name="usuario.html"
 
-    
+    def list(self, request):
+        return Response(template_name="usuario.html") 
 
     def __str__(self):
         return r"usuario"
