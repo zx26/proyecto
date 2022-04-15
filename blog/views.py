@@ -1,15 +1,12 @@
 from abc import abstractmethod
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.renderers import TemplateHTMLRenderer, BaseRenderer 
+from blog.models import Entrada
+from django.shortcuts import get_object_or_404, redirect
+from rest_framework.renderers import TemplateHTMLRenderer
 from blog.serializers import UsuarioSerializador, EntradaSerializador, ComentarioSerializador
 from rest_framework.response import Response 
 
-class Renderizador(BaseRenderer):
-    media_type='text/html'
-    format='html'
-
-    def render(self, data, accepted_media_type=None, renderer_context=None):
-        return Response()
+ 
  
 class VistaBase(ModelViewSet):
     """Resumen  
@@ -51,8 +48,7 @@ class VistaBase(ModelViewSet):
 
 class ApiUsuario(VistaBase):
     serializer_class=UsuarioSerializador
-    template_name="usuario.html"
-
+ 
     def list(self, request):
         return Response(template_name="usuario.html") 
 
@@ -62,8 +58,28 @@ class ApiUsuario(VistaBase):
 class ApiEntrada(VistaBase):
     serializer_class=EntradaSerializador
 
+    def list(self, request):
+        return Response(template_name="entradas.html") 
+
     def __str__(self):
         return r"entrada"
+
+class ApiEdicionEntrada(VistaBase):
+    serializer_class=EntradaSerializador
+     
+ 
+    def list(self,request,*arg,**kwargs):
+         
+        return Response(request.data, template_name="edicion_entradas.html")
+
+    def create(self,request ):
+        serializer = EntradaSerializador(data=request.data)
+        serializer.is_valid(raise_exception=True) 
+        serializer.save()
+        return redirect('entrada')
+ 
+    def __str__(self):
+        return r"entrada_edicion"
 
 class ApiComentario(VistaBase):
     serializer_class=ComentarioSerializador 
@@ -75,7 +91,7 @@ class ApiViewGeneral(object):
 
     def __init__(self) -> None:
         super().__init__()
-        self.viewset= [ApiUsuario(),ApiEntrada(),ApiComentario(),]
+        self.viewset= [ApiUsuario(),ApiEntrada(),ApiComentario(),ApiEdicionEntrada()]
 
 
     def get_view_set(self):
